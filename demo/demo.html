@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Simple jQuery form validator demo</title>
+	<link rel="stylesheet" href="bootstrap.min.css">
+</head>
+<body>
+	<div class="container">
+		<div class="row col-lg-6 col-lg-offset-3">
+			<h1>jQuery Form Validator Demo</h1>
+			<div id="status" class="alert"></div>
+			<div class="well">
+				<form>
+					<div class="form-group">
+						<label for="name">Name: (Required)</label>
+						<input type="text" id="name" class="form-control" name="name" data-validation="required">
+					</div>
+					<div class="form-group">
+						<label for="age">Age: (Required, numeric)</label>
+						<input type="text" id="age" class="form-control" name="age" data-validation="required|numeric">
+					</div>
+					<div class="form-group">
+						<label for="email">E-mail: (Required, email)</label>
+						<input type="text" id="email" class="form-control" name="email" data-validation="required|email">
+					</div>
+					<div class="form-group">
+						<label for="reason">Reason or choose "Other": (Required unique)</label>
+						<input type="text" id="reason" class="js-reason form-control" name="reason" data-validation="requiredUnique:.js-reason">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" class="js-reason" name="reason" data-validation="requiredUnique:.js-reason"> Other
+							</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="">Choose one from each column: (Required scoped unique)</label>
+						<div class="row">
+							<div class="js-col-a col-lg-6">
+								<h5>Column A</h5>
+								<div class="checkbox">
+									<label><input type="checkbox" name="column" data-validation="requiredScopedUnique:[name=column]:.js-col-a">A</label>
+								</div>
+								<div class="checkbox">
+									<label><input type="checkbox" name="column" data-validation="requiredScopedUnique:[name=column]:.js-col-a">B</label>
+								</div>
+								<div class="checkbox">
+									<label><input type="checkbox" name="column" data-validation="requiredScopedUnique:[name=column]:.js-col-a">C</label>
+								</div>
+								<div class="checkbox">
+									<label><input type="checkbox" name="column" data-validation="requiredScopedUnique:[name=column]:.js-col-a">D</label>
+								</div>
+								<div class="checkbox">
+									<label><input type="checkbox" name="column" data-validation="requiredScopedUnique:[name=column]:.js-col-a">E</label>
+								</div>
+							</div>
+							<div class="js-col-b col-lg-6">
+								<h5>Column B</h5>
+								<div class="checkbox">
+									<label><input type="checkbox" name="column" data-validation="requiredScopedUnique:[name=column]:.js-col-b">1</label>
+								</div>
+								<div class="checkbox">
+									<label><input type="checkbox" name="column" data-validation="requiredScopedUnique:[name=column]:.js-col-b">2</label>
+								</div>
+								<div class="checkbox">
+									<label><input type="checkbox" name="column" data-validation="requiredScopedUnique:[name=column]:.js-col-b">3</label>
+								</div>
+								<div class="checkbox">
+									<label><input type="checkbox" name="column" data-validation="requiredScopedUnique:[name=column]:.js-col-b">4</label>
+								</div>
+								<div class="checkbox">
+									<label><input type="checkbox" name="column" data-validation="requiredScopedUnique:[name=column]:.js-col-b">5</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="custom">Custom validation rule: (Value must be "foo")</label>
+						<input type="text" name="custom" id="custom" class="form-control" data-validation="foo">
+					</div>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<script src="jquery-2.1.4.min.js"></script>
+	<script src="jquery.validator.min.js"></script>
+	<script>
+		var customValidation = {
+			foo: function (value, input) {
+				return value === "foo";
+			}
+		};
+
+		$('form').on('submit', function (event) {
+			event.preventDefault();
+
+			var validation, errors;
+
+			$('#status').removeClass('alert-danger alert-success').empty();
+
+			validation = $(this).validate(customValidation);
+
+			if (validation.passed === false) {
+				errors = '<p>Failed</p>';
+
+				for (error in validation.errors) {
+					errors += '<p>Input: ' + error + ', Rule: ' + validation.errors[error] + '</p>';
+				}
+
+				$('#status').addClass('alert-danger').html(errors);
+			} else {
+				$('#status').addClass('alert-success').text('Passed!');
+			}
+
+			console.log(validation);
+		});
+	</script>
+</body>
+</html>
